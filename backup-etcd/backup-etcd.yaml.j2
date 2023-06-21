@@ -1,0 +1,29 @@
+{% import 'macros/common.j2' as util with context %}
+image:
+  repository: {{ util.image_short('backup-etcd', 'third') }}
+  tag: {{ util.image_tag('backup-etcd', 'third') }}
+  pullPolicy: IfNotPresent
+
+## Persistence enabled by default
+## global persistence settings
+persistence:
+  enabled: true
+  useDynamicProvisioning: false
+
+backupVolume:
+  ## Specify the name of the Existing Claim to be used by your application
+  existingClaimName: ""
+ 
+  ## Specify the name of the StorageClass
+  ## empty string means don't use a StorageClass
+  storageClassName: ""
+
+  ## minimum Persistence Storage volume size of 1Gi
+  size: 1Gi
+
+backupParameters:
+  ## Specify the backup schedule in Cron format
+  backupSchedule: "*/1 * * * *"
+  ##backup save retention in days
+  backupRetention: 5
+

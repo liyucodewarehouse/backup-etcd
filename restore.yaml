@@ -1,0 +1,42 @@
+- hosts: kube-master
+  tasks:
+  - name: stopping kube_master services
+    service: name={{ item }} state=stopped
+    with_items:
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+
+- hosts:
+  - kube-master
+  - kube-worker
+  tasks:
+  - name: stopping kube_node services
+    service: name={{ item }} state=stopped
+    with_items:
+    - kubelet
+    - kube-proxy
+
+- hosts: etcd
+  roles:
+  - cluster-restore
+
+- hosts: kube-master
+  tasks:
+  - name: starting kube_master services
+    service: name={{ item }} state=started enabled=yes
+    with_items:
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+
+- hosts:
+  - kube-master
+  - kube-node
+  tasks:
+  - name: starting kube_node services
+    service: name={{ item }} state=started enabled=yes
+    with_items:
+    - kubelet
+    - kube-proxy
+
